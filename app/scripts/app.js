@@ -18,7 +18,13 @@ angular
     'ngTouch'
   ])
   .config(function ($routeProvider,  $compileProvider) {
+
+    // https://docs.angularjs.org/guide/production
     $compileProvider.debugInfoEnabled(false);
+    // TODO - Investigate "Strict DI Mode"
+    $compileProvider.commentDirectivesEnabled(false);
+    $compileProvider.cssClassDirectivesEnabled(false);
+
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
