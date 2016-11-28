@@ -17,7 +17,8 @@ angular
     'ngSanitize',
     'ngTouch'
   ])
-  .config(function ($routeProvider) {
+  .config(function ($routeProvider,  $compileProvider) {
+    $compileProvider.debugInfoEnabled(false);
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
