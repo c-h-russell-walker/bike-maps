@@ -25,6 +25,8 @@ module.exports = function (grunt) {
     dist: 'dist'
   };
 
+  grunt.loadNpmTasks('grunt-connect-apimock');
+
   // Define the configuration for all the tasks
   grunt.initConfig({
 
@@ -75,11 +77,16 @@ module.exports = function (grunt) {
         hostname: 'localhost',
         livereload: 35729
       },
+      apimock: [
+        // Passing array for when we find use cases for more explicit endpoints
+        {url: '/api/', dir: 'fixtures'},
+      ],
       livereload: {
         options: {
           open: true,
           middleware: function (connect) {
             return [
+              require('grunt-connect-apimock/lib/apimock').mockRequest,
               connect.static('.tmp'),
               connect().use(
                 '/bower_components',
@@ -224,7 +231,7 @@ module.exports = function (grunt) {
         src: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
         ignorePath: /(\.\.\/){1,2}bower_components\//
       }
-    }, 
+    },
 
     // Compiles Sass to CSS and generates necessary files if requested
     compass: {
@@ -470,6 +477,7 @@ module.exports = function (grunt) {
       'wiredep',
       'concurrent:server',
       'postcss:server',
+      'configureApimock',
       'connect:livereload',
       'watch'
     ]);

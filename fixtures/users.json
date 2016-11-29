@@ -1,0 +1,24 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Matt"
+    },
+    {
+      "id": 2,
+      "name": "John Doe"
+    },
+    {
+      "id": 3,
+      "name": "Jane Doe"
+    },
+    {
+      "id": 4,
+      "name": "Trial User"
+    },
+    {
+      "id": 1,
+      "name": "Lost User"
+    }
+  ]
+}
