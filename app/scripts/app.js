@@ -17,11 +17,10 @@ angular
     'ngSanitize',
     'ngTouch'
   ])
-  .config(function ($routeProvider,  $compileProvider) {
+  .config(['$routeProvider', '$compileProvider', function ($routeProvider,  $compileProvider) {
 
     // https://docs.angularjs.org/guide/production
     $compileProvider.debugInfoEnabled(false);
-    // TODO - Investigate "Strict DI Mode"
     $compileProvider.commentDirectivesEnabled(false);
     $compileProvider.cssClassDirectivesEnabled(false);
 
@@ -39,4 +38,4 @@ angular
       .otherwise({
         redirectTo: '/'
       });
-  });
+  }]);

@@ -8,10 +8,10 @@
  * Controller of the bikeMapsApp
  */
 angular.module('bikeMapsApp')
-  .controller('MainCtrl', function () {
+  .controller('MainCtrl', ['$scope', '$http', function ($scope, $http) {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
       'Karma'
     ];
-  });
+  }]);
