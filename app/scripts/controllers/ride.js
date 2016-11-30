@@ -16,6 +16,8 @@ angular.module('bikeMapsApp')
       rideName: $routeParams.rideName,
     };
 
+    $scope.rideName = $routeParams.rideName;
+
     RideDataService.getRideData(dataIds, function successOnGetRideData(resp) {
       $scope.ride = resp;
     }).$promise.catch(function catchOnGetRideData(data) {
