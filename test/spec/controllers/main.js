@@ -1,4 +1,5 @@
 'use strict';
+/* globals getJSONFixture: false */
 
 describe('Controller: MainCtrl', function () {
 
@@ -13,10 +14,11 @@ describe('Controller: MainCtrl', function () {
   beforeEach(inject(function ($injector, $controller, $rootScope) {
 
     $httpBackend = $injector.get('$httpBackend');
+    // TODO - separate mocked data fixtures from test fixtures
+    // for now we are reusing them for simplicity's sake
     jasmine.getJSONFixtures().fixturesPath = 'base/fixtures';
 
     // TODO - Use RegEx for url param
-    // TODO - `getJSONFixture` throwing warning in linter
     $httpBackend.whenGET('/api/users?method=GET').respond(
       getJSONFixture('users.json')
     );

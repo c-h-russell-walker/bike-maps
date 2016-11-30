@@ -38,6 +38,7 @@ module.exports = function(config) {
       'test/spec/**/*.js',
 
       // fixtures
+      // TODO - make actual fixtures instead of reusing the mocked data
       {
         pattern: 'fixtures/*.json',
         watched: true,
