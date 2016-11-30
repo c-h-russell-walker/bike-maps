@@ -8,10 +8,12 @@
  * Controller of the bikeMapsApp
  */
 angular.module('bikeMapsApp')
-  .controller('MainCtrl', ['$scope', '$http', function ($scope, $http) {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
+  .controller('MainCtrl', ['$scope', 'RideDataService', function ($scope, RideDataService) {
+
+    RideDataService.getUsers({}, function successOnGetUsers(resp) {
+      $scope.users = resp.users;
+    }).$promise.catch(function catchOnGetUsers(data) {
+      console.error(data);
+    }).finally(function resolveOnGetUsers() {
+    });
   }]);

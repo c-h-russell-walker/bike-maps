@@ -38,4 +38,27 @@ angular
       .otherwise({
         redirectTo: '/'
       });
+  }])
+  // TODO - Potentially name this better - we're mixing up users and rides
+  .factory('RideDataService', ['$resource', function($resource) {
+    // https://docs.angularjs.org/api/ngResource/service/$resource#usage
+    // $resource(url, [paramDefaults], [actions], options);
+    return $resource('/api/users/:userId/',
+      {},
+      {
+        'getUsers': {
+          params : {
+            method: 'GET'
+          }
+        },
+        // TODO - Actually work on this and flesh it out
+        'getRideData': {
+          params : {
+            method: 'GET',
+            userId: '@userId',
+          }
+        }
+      },
+      {}
+    );
   }]);
