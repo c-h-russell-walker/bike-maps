@@ -8,12 +8,13 @@
  * Controller of the bikeMapsApp
  */
 angular.module('bikeMapsApp')
-  .controller('MainCtrl', ['$scope', 'RideDataService', function ($scope, RideDataService) {
+  .controller('MainCtrl', ['$scope', 'UserDataService', function ($scope, UserDataService) {
 
-    RideDataService.getUsers({}, function successOnGetUsers(resp) {
+    UserDataService.getUsers({}, function successOnGetUsers(resp) {
       $scope.users = resp.users;
     }).$promise.catch(function catchOnGetUsers(data) {
       console.error(data);
     }).finally(function resolveOnGetUsers() {
+
     });
   }]);

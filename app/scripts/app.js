@@ -35,12 +35,23 @@ angular
         controller: 'AboutCtrl',
         controllerAs: 'about'
       })
+      .when('/user/:userId', {
+        templateUrl: 'views/user.html',
+        controller: 'UserCtrl',
+        controllerAs: 'user'
+      })
+      // TODO - Revisit URL structure as well as ride id instead of name
+      .when('/ride/:userId/:rideName', {
+        templateUrl: 'views/ride.html',
+        controller: 'RideCtrl',
+        controllerAs: 'ride'
+      })
       .otherwise({
         redirectTo: '/'
       });
   }])
-  // TODO - Potentially name this better - we're mixing up users and rides
-  .factory('RideDataService', ['$resource', function($resource) {
+  // TODO - move these resource services into their own directory
+  .factory('UserDataService', ['$resource', function($resource) {
     // https://docs.angularjs.org/api/ngResource/service/$resource#usage
     // $resource(url, [paramDefaults], [actions], options);
     return $resource('/api/users/:userId/',
@@ -48,14 +59,36 @@ angular
       {
         'getUsers': {
           params : {
-            method: 'GET'
+            method: 'GET',
           }
         },
-        // TODO - Actually work on this and flesh it out
+        'getUser': {
+          params : {
+            method: 'GET',
+            userId: '@userId',
+          }
+        }
+      },
+      {}
+    );
+  }])
+  .factory('RideDataService', ['$resource', function($resource) {
+    // TODO - Revisit this URL structure - ugly but working with mock data
+    return $resource('/api/users/:userId/rides/:rideName/',
+      {},
+      {
+        'getRides': {
+          params : {
+            method: 'GET',
+            userId: '@userId',
+          }
+        },
         'getRideData': {
           params : {
             method: 'GET',
             userId: '@userId',
+            // TODO - Use ID instead of name - for now simpler to track name of supplied json files
+            rideName: '@rideName',
           }
         }
       },
