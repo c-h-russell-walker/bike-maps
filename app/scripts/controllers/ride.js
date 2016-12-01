@@ -43,14 +43,26 @@ angular.module('bikeMapsApp')
       // TODO - Tweak/add-to these options and make more dynamic (like zoom value)
       var mapOptions = {
         zoom: 13,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
         center: userCenter
+      };
+
+      var bikeMarker = {
+        path: 'M 10.6,20.4 1.5,1.5 10.9,6.1 19.8,1.5 z',
+        strokeColor: '#B22222',
+        fillColor: '#B22222',
+        fillOpacity: 1,
+        scale: 0.35
       };
 
       map = new google.maps.Map(document.getElementById('map'), mapOptions);
       map.data.addGeoJson(resp);
 
-      map.data.forEach(function populateMap(feature) {
-        new google.maps.LatLng(feature.getProperty('coordinates'));
+      map.data.setStyle({
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 10,
+        icon: bikeMarker
       });
 
       $scope.toggleBicycleLayer();
