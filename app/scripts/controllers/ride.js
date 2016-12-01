@@ -21,6 +21,13 @@ angular.module('bikeMapsApp')
       rideName: rideName,
     };
 
+    // Angular $scope vars
+    $scope.bicycleLayer = true;
+
+    // Google Map vars
+    var map;
+    var bikeLayer = new google.maps.BicyclingLayer();
+
     $scope.rideName = rideName;
 
     RideDataService.getRideData(dataIds, function successOnGetRideData(resp) {
@@ -39,22 +46,24 @@ angular.module('bikeMapsApp')
         center: userCenter
       };
 
-      var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+      map = new google.maps.Map(document.getElementById('map'), mapOptions);
       map.data.addGeoJson(resp);
 
       map.data.forEach(function populateMap(feature) {
         new google.maps.LatLng(feature.getProperty('coordinates'));
       });
 
-      // TODO - make this a toggle feature for the user
-      // If you use setMap(null) it turns the layer off
-      var bikeLayer = new google.maps.BicyclingLayer();
-      bikeLayer.setMap(map);
+      $scope.toggleBicycleLayer();
 
     }).$promise.catch(function catchOnGetRideData(data) {
       console.error(data);
     }).finally(function resolveOnGetRideData() {
 
     });
+
+    $scope.toggleBicycleLayer = function() {
+      var layer = $scope.bicycleLayer ? map : null;
+      bikeLayer.setMap(layer);
+    };
 
   }]);
