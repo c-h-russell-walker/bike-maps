@@ -25,7 +25,9 @@ angular.module('bikeMapsApp')
 
     RideDataService.getRideData(dataIds, function successOnGetRideData(resp) {
       // TODO - Determine a (efficient) way how to get a true center
-      var arbitraryCtr = resp.features[0].geometry.coordinates;
+      // still hacky but at least a better chance it'll be in the middle
+      var middle = Math.floor(resp.features.length / 2);
+      var arbitraryCtr = resp.features[middle].geometry.coordinates;
 
       var ctrLat = arbitraryCtr[1];
       var ctrLng = arbitraryCtr[0];
@@ -41,7 +43,7 @@ angular.module('bikeMapsApp')
       map.data.addGeoJson(resp);
 
       map.data.forEach(function populateMap(feature) {
-        var point = new google.maps.LatLng(feature.getProperty('coordinates'));
+        new google.maps.LatLng(feature.getProperty('coordinates'));
       });
 
       // TODO - make this a toggle feature for the user
