@@ -30,10 +30,10 @@ angular
         controller: 'MainCtrl',
         controllerAs: 'main'
       })
-      .when('/about', {
-        templateUrl: 'views/about.html',
-        controller: 'AboutCtrl',
-        controllerAs: 'about'
+      .when('/rides', {
+        templateUrl: 'views/rides.html',
+        controller: 'RidesCtrl',
+        controllerAs: 'rides'
       })
       .when('/user/:userId', {
         templateUrl: 'views/user.html',
