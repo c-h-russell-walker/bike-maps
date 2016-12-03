@@ -8,11 +8,11 @@
  * Controller of the bikeMapsApp
  */
 
-/* globals google: false */
+/* globals L: false */
 
 angular.module('bikeMapsApp')
-  .controller('RideCtrl', ['$scope', '$routeParams', 'RideDataService',
-    function ($scope, $routeParams, RideDataService) {
+  .controller('RideCtrl', ['$scope', '$routeParams', 'RideDataService', 'MAP_CONSTANTS',
+    function ($scope, $routeParams, RideDataService, MAP_CONSTANTS) {
 
     var userId = $routeParams.userId;
     var rideName = $routeParams.rideName;
@@ -21,56 +21,32 @@ angular.module('bikeMapsApp')
       rideName: rideName,
     };
 
+    var lngLatCoords = [], latLngCoords = []; // Arrays  of coords from Point Collection
+
     // Angular $scope vars
-    $scope.bicycleLayer = true;
-
-    // Google Map vars
-    var map;
-    var bikeLayer = new google.maps.BicyclingLayer();
-
     $scope.rideName = rideName;
 
+    var map;
+    L.mapbox.accessToken = MAP_CONSTANTS.LEAFLET_API_KEY;
+
     RideDataService.getRideData(dataIds, function successOnGetRideData(resp) {
-      // TODO - Determine a (efficient) way how to get a true center
-      // still hacky but at least a better chance it'll be in the middle
-      var middle = Math.floor(resp.features.length / 2);
-      var arbitraryCtr = resp.features[middle].geometry.coordinates;
-
-      var ctrLat = arbitraryCtr[1];
-      var ctrLng = arbitraryCtr[0];
-      var userCenter = new google.maps.LatLng(ctrLat, ctrLng);
-
-      // TODO - Tweak/add-to these options and make more dynamic (like zoom value)
-      var mapOptions = {
-        zoom: 13,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        center: userCenter
-      };
-
-      // Icon/SVG
-      var startColor = '#1D8348';
-      var endColor = '#A93226';
-      // TODO - Use all these vars for start and end icons (with green and red respectively)
-      var bikeMarker = {
-        path: 'M 10.6,20.4 1.5,1.5 10.9,6.1 19.8,1.5 z',
-        strokeColor: '#17202A',
-        fillColor: startColor,
-        fillOpacity: 1,
-        scale: 0.85
-      };
-
-      var svgIcon = {
-        path: google.maps.SymbolPath.CIRCLE
-      };
-
-      map = new google.maps.Map(document.getElementById('map'), mapOptions);
-      map.data.addGeoJson(resp);
-
-      map.data.setStyle({
-        icon: svgIcon
+      lngLatCoords = resp.features.map(function iteratePoints(feature) {
+        return feature.geometry.coordinates;
       });
 
-      $scope.toggleBicycleLayer();
+      latLngCoords = lngLatCoords.map(function reverseCoords(coords) {
+        return coords.reverse();
+      });
+
+      map = L.map('map', {
+        layers: L.mapbox.tileLayer('mapbox.streets'),
+      });
+
+      setStartAndEnd();
+
+      var polyline = L.polyline(latLngCoords).addTo(map);
+      // Zoom map to the polyline - thanks to this we can skip needing center to map also
+      map.fitBounds(polyline.getBounds());
 
     }).$promise.catch(function catchOnGetRideData(data) {
       console.error(data);
@@ -78,9 +54,17 @@ angular.module('bikeMapsApp')
 
     });
 
-    $scope.toggleBicycleLayer = function() {
-      var layer = $scope.bicycleLayer ? map : null;
-      bikeLayer.setMap(layer);
-    };
+    function setStartAndEnd() {
+      // TODO - Make and use flags or red/green icons
+      L.marker(latLngCoords[0], {
+        title: 'Start',
+        opacity: 0.75
+      }).addTo(map);
+
+      L.marker(latLngCoords[latLngCoords.length - 1], {
+        title: 'End',
+        opacity: 0.75
+      }).addTo(map);
+    }
 
   }]);
