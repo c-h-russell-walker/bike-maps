@@ -21,7 +21,8 @@ angular.module('bikeMapsApp')
       rideName: rideName,
     };
 
-    var lngLatCoords = [], latLngCoords = []; // Arrays  of coords from Point Collection
+    // Array of coords from Point Collection
+    var latLngCoords = [];
 
     // Angular $scope vars
     $scope.rideName = rideName;
@@ -30,12 +31,12 @@ angular.module('bikeMapsApp')
     L.mapbox.accessToken = MAP_CONSTANTS.LEAFLET_API_KEY;
 
     RideDataService.getRideData(dataIds, function successOnGetRideData(resp) {
-      lngLatCoords = resp.features.map(function iteratePoints(feature) {
-        return feature.geometry.coordinates;
-      });
-
-      latLngCoords = lngLatCoords.map(function reverseCoords(coords) {
-        return coords.reverse();
+      latLngCoords = resp.features.map(function reverseCoords(feature) {
+        return L.latLng(
+          feature.geometry.coordinates[1],
+          feature.geometry.coordinates[0],
+          feature.properties.sensorData.phone.altitude
+        );
       });
 
       map = L.map('map', {
@@ -44,9 +45,16 @@ angular.module('bikeMapsApp')
 
       setStartAndEnd();
 
-      var polyline = L.polyline(latLngCoords).addTo(map);
+      var polyline = L.polyline(latLngCoords, {
+        weight: 6,
+      }).addTo(map);
       // Zoom map to the polyline - thanks to this we can skip needing center to map also
       map.fitBounds(polyline.getBounds());
+
+      polyline.on('mouseover', function hoverRoute(evt) {
+        // TODO - Leverage this somehow
+        console.log(evt.latlng);
+      });
 
     }).$promise.catch(function catchOnGetRideData(data) {
       console.error(data);
