@@ -71,14 +71,7 @@ angular.module('bikeMapsApp')
           weight: 6,
         }).addTo(map);
 
-        // Zoom map to the polyline - thanks to this we can skip needing center to map also
-        try {
-          map.getBounds();
-        } catch (e) {
-          // Set Bounds only if we get an error from them not being set yet ;-)
-          // TODO - assuming we go this route we could check for the greatest values inside `try`
-          map.fitBounds(polyline.getBounds());
-        }
+        zoomMap(map, polyline);
 
       }).$promise.catch(function catchOnGetRideData(data) {
         console.error(data);
@@ -98,6 +91,19 @@ angular.module('bikeMapsApp')
         title: 'End',
         opacity: 0.75
       }).addTo(map);
+    }
+
+    function zoomMap(map, polyline) {
+      // One reason we have this as it's own function is JS engines' general loack of
+      // optimization of code blocks with try catch's
+      // Zoom map to the polyline - thanks to this we can skip needing center to map also
+      try {
+        map.getBounds();
+      } catch (e) {
+        // Set Bounds only if we get an error from them not being set yet ;-)
+        // TODO - assuming we go this route we could check for the greatest values inside `try`
+        map.fitBounds(polyline.getBounds());
+      }
     }
 
   }]);
