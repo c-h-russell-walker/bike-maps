@@ -30,6 +30,10 @@ angular.module('bikeMapsApp')
     var map;
     L.mapbox.accessToken = MAP_CONSTANTS.LEAFLET_API_KEY;
 
+    map = L.map('map', {
+      layers: L.mapbox.tileLayer('mapbox.streets'),
+    });
+
     RideDataService.getRideData(dataIds, function successOnGetRideData(resp) {
       latLngCoords = resp.features.map(function reverseCoords(feature) {
         return L.latLng(
@@ -37,10 +41,6 @@ angular.module('bikeMapsApp')
           feature.geometry.coordinates[0],
           feature.properties.sensorData.phone.altitude
         );
-      });
-
-      map = L.map('map', {
-        layers: L.mapbox.tileLayer('mapbox.streets'),
       });
 
       setStartAndEnd();
