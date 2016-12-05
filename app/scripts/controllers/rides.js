@@ -18,7 +18,7 @@ angular.module('bikeMapsApp')
     $scope.heatMapLayer = true;
     $scope.heatMapRadius = 15;
 
-    var map;
+    var allRidesMap;
     L.mapbox.accessToken = MAP_CONSTANTS.LEAFLET_API_KEY;
 
     var allRidesLatLngs = [];
@@ -26,7 +26,7 @@ angular.module('bikeMapsApp')
       radius: $scope.heatMapRadius,
     });
 
-    map = L.map('map', {
+    allRidesMap = L.map('all-rides-map', {
       layers: [
         L.mapbox.tileLayer('mapbox.streets'),
         heatLayer
@@ -86,9 +86,9 @@ angular.module('bikeMapsApp')
 
         var polyline = L.polyline(latLngCoords, {
           weight: 6,
-        }).addTo(map);
+        }).addTo(allRidesMap);
 
-        zoomMap(map, polyline);
+        zoomMap(allRidesMap, polyline);
 
       }).$promise.catch(function catchOnGetRideData(data) {
         console.error(data);
@@ -108,12 +108,12 @@ angular.module('bikeMapsApp')
       L.marker(start, {
         title: 'Start',
         opacity: 0.75
-      }).addTo(map);
+      }).addTo(allRidesMap);
 
       L.marker(end, {
         title: 'End',
         opacity: 0.75
-      }).addTo(map);
+      }).addTo(allRidesMap);
     }
 
     function zoomMap(map, polyline) {
@@ -131,7 +131,7 @@ angular.module('bikeMapsApp')
 
     $scope.toggleHeatMapLayer = function() {
       if ($scope.heatMapLayer) {
-        heatLayer.addTo(map);
+        heatLayer.addTo(allRidesMap);
       } else {
         heatLayer.remove();
       }
