@@ -69,7 +69,12 @@ body {
 
 /* Map / Rides page */
 #map {
-  min-height: 400px;
+  min-height: 500px;
+}
+#ride-container {
+  svg {
+    max-width: 725px;
+  }
 }
 
 #bike-map-controls {
