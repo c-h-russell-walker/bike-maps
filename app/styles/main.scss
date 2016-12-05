@@ -72,7 +72,8 @@ body {
   min-height: 500px;
 }
 #ride-container {
-  svg {
+  svg#elevation-graph {
+    margin-top: 20px;
     max-width: 725px;
   }
 }

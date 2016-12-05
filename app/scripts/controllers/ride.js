@@ -86,7 +86,8 @@ angular.module('bikeMapsApp')
       var svg = d3.select('body #ride-container')
         .append('svg:svg').attr({
           width: width,
-          height: height
+          height: height,
+          id: 'elevation-graph'
         });
 
       var minAlt = d3.min(latLngCoords, function getMinAlt(data) {
@@ -162,7 +163,7 @@ angular.module('bikeMapsApp')
         .attr('class', 'y label')
         .attr('dy', '.75em')
         .attr('transform', 'translate(' + (padding) + ', 0)')
-        .text('Altitude change during ride (hover for altitude values');
+        .text('Altitude (in meters) change during ride (hover for altitude values');
 
       // TODO - Make this label much nicer
       svg.append('text')
