@@ -35,6 +35,12 @@ angular.module('bikeMapsApp')
       layers: L.mapbox.tileLayer('mapbox.streets'),
     });
 
+    var currentAltMarker = L.marker([0, 0], {
+      icon: L.mapbox.marker.icon({
+        'marker-color': '#f86767'
+      })
+    }).addTo(map);
+
     RideDataService.getRideData(dataIds, function successOnGetRideData(resp) {
       latLngCoords = resp.features.map(function reverseCoords(feature) {
         return L.latLng(
@@ -76,6 +82,10 @@ angular.module('bikeMapsApp')
         title: 'Finish',
         opacity: 0.75
       }).addTo(map);
+    }
+
+    function updateElevationMarker(latLng) {
+      currentAltMarker.setLatLng(latLng);
     }
 
     function initElevationGraph() {
@@ -132,9 +142,10 @@ angular.module('bikeMapsApp')
         // Hover functionality to visually aid in displaying altitude svg title
         // TODO - Use these event handlers to potentially link graph data to map
         .on('mouseover', function mouseOverAlt() {
-          d3.select(this).style({
+          var elem = d3.select(this).style({
             opacity: '0.8'
           });
+          updateElevationMarker(elem.data()[0]);
         })
         .on('mouseout', function mouseOutAlt() {
           d3.select(this).style({
