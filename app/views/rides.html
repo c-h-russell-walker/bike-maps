@@ -1,5 +1,22 @@
 
 <div class="row marketing">
-  <p>View all the users' rides (map TODO)</p>
-  <!-- ADD Map (start with heatmap) -->
+  <p>View all the users' rides</p>
+
+  <div>
+    <form id="bike-map-controls">
+      <label for="heat-map-layer">Toggle Heat Map</label>
+      <input type="checkbox"
+       id="heat-map-layer"
+       ng-model="heatMapLayer"
+       ng-change="toggleHeatMapLayer()" />
+
+       <label for="heat-map-layer">Heat Map Radius</label>
+       <input type="number"
+       id="heat-map-radius"
+       ng-model="heatMapRadius"
+       ng-change="changeHeatMapRadius()" />
+    </form>
+  </div>
+
+  <div id="all-rides-map"></div>
 </div>

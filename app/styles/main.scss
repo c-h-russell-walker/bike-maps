@@ -68,13 +68,23 @@ body {
 }
 
 /* Map / Rides page */
-#map {
-  min-height: 400px;
+#map,
+#all-rides-map {
+  min-height: 500px;
+}
+#ride-container {
+  svg#elevation-graph {
+    margin-top: 20px;
+    max-width: 725px;
+  }
 }
 
 #bike-map-controls {
   margin-bottom: 25px;
-  input,
+  input {
+    cursor: pointer;
+    margin-right: 10px;
+  }
   label {
     cursor: pointer;
   }

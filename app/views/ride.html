@@ -2,15 +2,16 @@
 <div>
   <h3>Here's our "{{ ::rideName }}" ride data:</h3>
 
-  <div>
-    <form id="bike-map-controls">
-      <label for="bicycle-layer">Toggle Bike Lanes &amp; Paths</label>
-      <input type="checkbox"
-       id="bicycle-layer"
-       ng-model="bicycleLayer"
-       ng-change="toggleBicycleLayer()" />
-    </form>
+  <div id="ride-container">
+    <div id="map"></div>
   </div>
 
-  <div id="map"></div>
+  <p>Todos:</p>
+  <ul>
+    <li>Big TODO - make some interactivity between map and graph</li>
+    <li>Figure out styling of y-axis (currently over graph values)</li>
+    <li>Maybe use tooltips instead of browsers' native svg title (Chrome has bigger delay than FF)</li>
+    <li>Style x-axis label more nicely</li>
+    <li>Label y-axis with units of altitude (meters)</li>
+  </ul>
 </div>

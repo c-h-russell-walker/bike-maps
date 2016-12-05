@@ -17,6 +17,10 @@ angular
     'ngSanitize',
     'ngTouch'
   ])
+  .constant('MAP_CONSTANTS', {
+      'LEAFLET_API_KEY': 'pk.eyJ1IjoiYy1oLXJ1c3NlbGwtd2Fsa2VyIiwiYSI6ImNpdzloOWdtMzAwMDAyemsyMWtrbXlsbWEifQ.dFuLgJuete8USSbAqUjs-w'
+    }
+  )
   .config(['$routeProvider', '$compileProvider', function ($routeProvider,  $compileProvider) {
 
     // https://docs.angularjs.org/guide/production
