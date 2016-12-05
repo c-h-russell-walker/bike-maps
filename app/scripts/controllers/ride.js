@@ -25,6 +25,8 @@ angular.module('bikeMapsApp')
     // Array of coords from Point Collection
     var latLngCoords = [];
 
+    var features;
+
     // Angular $scope vars
     $scope.rideName = rideName;
 
@@ -42,7 +44,8 @@ angular.module('bikeMapsApp')
     }).addTo(map);
 
     RideDataService.getRideData(dataIds, function successOnGetRideData(resp) {
-      latLngCoords = resp.features.map(function reverseCoords(feature) {
+      features = resp.features;
+      latLngCoords = features.map(function reverseCoords(feature) {
         return L.latLng(
           feature.geometry.coordinates[1],
           feature.geometry.coordinates[0],
@@ -84,12 +87,31 @@ angular.module('bikeMapsApp')
       }).addTo(map);
     }
 
-    function updateElevationMarker(latLng) {
-      currentAltMarker.setLatLng(latLng);
+    function updateElevationMarker(markerData) {
+      currentAltMarker.setLatLng([markerData.lat, markerData.lng])
+        .bindPopup(formatTooltipData(markerData))
+        .openPopup();
+    }
+
+    function formatTooltipData(data) {
+      return 'Speed: ' + Math.round(data.wheelData.speed * 10) / 10 + 'km/h' +
+        ' - Distance: ' + Math.round(data.wheelData.tripOdometer * 10) / 10 + 'km';
     }
 
     function initElevationGraph() {
       /* jshint unused:false */
+
+      // We can do a lot more with the wheelData and sensorData
+      var graphData = features.map(function makeGraphData(feature) {
+        return {
+          lat: feature.geometry.coordinates[1],
+          lng: feature.geometry.coordinates[0],
+          alt: feature.properties.sensorData.phone.altitude,
+          wheelData: feature.properties.wheelData,
+          sensorData: feature.properties.sensorData.phone
+        };
+      });
+
       var width = 725;
       var height = 400;
       var padding = 25;
@@ -123,7 +145,7 @@ angular.module('bikeMapsApp')
         .orient('right');
 
       svg.selectAll('rect')
-        .data(latLngCoords)
+        .data(graphData)
         .enter()
         .append('rect')
         .attr('width', xScale.rangeBand())
@@ -155,7 +177,7 @@ angular.module('bikeMapsApp')
         // Leverage native browser `title` support of svgs
         .append('svg:title')
         .text(function assignText(data) {
-          return 'Altitude: ' + data.alt.toFixed(4);
+          return 'Altitude: ' + data.alt.toFixed(4) + formatTooltipData(data);
         });
 
       // Graph labels/axis additions
