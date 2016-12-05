@@ -74,7 +74,10 @@ body {
 
 #bike-map-controls {
   margin-bottom: 25px;
-  input,
+  input {
+    cursor: pointer;
+    margin-right: 10px;
+  }
   label {
     cursor: pointer;
   }
