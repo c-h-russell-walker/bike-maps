@@ -3,6 +3,11 @@
 This project is generated with [yo angular generator](https://github.com/yeoman/generator-angular)
 version 0.15.1.
 
+## Libraries being used:
+- [Mapbox](https://www.mapbox.com/mapbox-gl-js/api/)
+- [Leaflet.heat (Heatmap Plugin)](https://github.com/Leaflet/Leaflet.heat)
+- [D3](https://github.com/d3/d3)
+
 ## Build & development
 
 Run `grunt` for building and `grunt serve` for preview.
@@ -26,3 +31,5 @@ Running `grunt test` will run the unit tests with karma.
 - Add/update any more instructions on installation/development of app
 - Audit/update/cleanup dependencies
 - Decide if some of what is in repo should be removed (or even some deps should be included)
+- Address some list item TODOs in html of 'ride' page
+
