@@ -12,8 +12,9 @@
 /* globals d3: false */
 
 angular.module('bikeMapsApp')
-  .controller('RideCtrl', ['$scope', '$routeParams', 'RideDataService', 'MAP_CONSTANTS',
-    function ($scope, $routeParams, RideDataService, MAP_CONSTANTS) {
+  .controller('RideCtrl',
+    ['$scope', '$routeParams', 'RideDataService', 'UnitService', 'MAP_CONSTANTS',
+    function ($scope, $routeParams, RideDataService, UnitService, MAP_CONSTANTS) {
 
     var userId = $routeParams.userId;
     var rideName = $routeParams.rideName;
@@ -29,6 +30,7 @@ angular.module('bikeMapsApp')
 
     // Angular $scope vars
     $scope.rideName = rideName;
+    $scope.displayMetric = false;
 
     var map;
     L.mapbox.accessToken = MAP_CONSTANTS.LEAFLET_API_KEY;
@@ -94,9 +96,38 @@ angular.module('bikeMapsApp')
     }
 
     function formatTooltipData(data) {
-      return 'Speed: ' + Math.round(data.wheelData.speed * 10) / 10 + 'km/h' +
-        ' - Distance: ' + Math.round(data.wheelData.tripOdometer * 10) / 10 + 'km';
+      var tooltipData = 'Speed: ';
+      // TODO - Maybe make denominator (10) a setting or more dynamic?
+      var speed = data.wheelData.speed;
+      var dist = data.wheelData.tripOdometer;
+
+      if ($scope.displayMetric) {
+        tooltipData += Math.round((UnitService.convertToMetric('speed', speed) * 10) / 10) +
+        'km/h' +
+        ' - Distance: ' +
+        UnitService.convertToMetric('dist', dist).toFixed(1) +
+        'km';
+      } else {
+        tooltipData += Math.round((UnitService.convertToImperial('speed', speed) * 10) / 10) +
+        'mph' +
+        ' - Distance: ' +
+        UnitService.convertToImperial('dist', dist).toFixed(1) +
+        ' mile';
+        tooltipData += dist > 1 ? 's' : '';
+      }
+
+      return tooltipData;
     }
+
+    $scope.$watch('displayMetric', function watchUnits(newVal, oldVal) {
+      // TODO - If we have a popup currently we want to update the content, however we're
+      // not storing the current data we need on scope or anywhere yet - need to consider perf.
+      if (currentAltMarker.getPopup()) {
+        console.log(currentAltMarker.getPopup());
+        console.log(currentAltMarker.getPopup().getContent());
+        // currentAltMarker.setPopupContent();
+      }
+    });
 
     function initElevationGraph() {
       /* jshint unused:false */
