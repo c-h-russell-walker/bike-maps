@@ -54,6 +54,38 @@ angular
         redirectTo: '/'
       });
   }])
+  // TODO - move this and other services to new JS files
+  // Assumes there's just metric and imperial
+  .factory('UnitService', function() {
+    var toImperial = function(unit, value) {
+      // TODO - add other cases - also do we need to separate speed & dist?
+      switch (unit) {
+        case 'speed':
+          return value * 0.621371;
+        case 'dist':
+          return value * 0.621371;
+        default:
+          return 'Unit not supported.';
+      }
+    };
+
+    var toMetric = function(unit, value) {
+      // TODO - add other cases - also do we need to separate speed & dist?
+      switch (unit) {
+        case 'speed':
+          return value;
+        case 'dist':
+          return value;
+        default:
+          return 'Unit not supported.';
+      }
+    };
+
+    return {
+      convertToImperial: toImperial,
+      convertToMetric: toMetric,
+    };
+  })
   // TODO - move these resource services into their own directory
   .factory('UserDataService', ['$resource', function($resource) {
     // https://docs.angularjs.org/api/ngResource/service/$resource#usage

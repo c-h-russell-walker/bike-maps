@@ -12,8 +12,9 @@
 /* globals d3: false */
 
 angular.module('bikeMapsApp')
-  .controller('RideCtrl', ['$scope', '$routeParams', 'RideDataService', 'MAP_CONSTANTS',
-    function ($scope, $routeParams, RideDataService, MAP_CONSTANTS) {
+  .controller('RideCtrl',
+    ['$scope', '$routeParams', 'RideDataService', 'UnitService', 'MAP_CONSTANTS',
+    function ($scope, $routeParams, RideDataService, UnitService, MAP_CONSTANTS) {
 
     var userId = $routeParams.userId;
     var rideName = $routeParams.rideName;
@@ -25,8 +26,11 @@ angular.module('bikeMapsApp')
     // Array of coords from Point Collection
     var latLngCoords = [];
 
+    var features;
+
     // Angular $scope vars
     $scope.rideName = rideName;
+    $scope.displayMetric = false;
 
     var map;
     L.mapbox.accessToken = MAP_CONSTANTS.LEAFLET_API_KEY;
@@ -42,7 +46,8 @@ angular.module('bikeMapsApp')
     }).addTo(map);
 
     RideDataService.getRideData(dataIds, function successOnGetRideData(resp) {
-      latLngCoords = resp.features.map(function reverseCoords(feature) {
+      features = resp.features;
+      latLngCoords = features.map(function reverseCoords(feature) {
         return L.latLng(
           feature.geometry.coordinates[1],
           feature.geometry.coordinates[0],
@@ -84,12 +89,60 @@ angular.module('bikeMapsApp')
       }).addTo(map);
     }
 
-    function updateElevationMarker(latLng) {
-      currentAltMarker.setLatLng(latLng);
+    function updateElevationMarker(markerData) {
+      currentAltMarker.setLatLng([markerData.lat, markerData.lng])
+        .bindPopup(formatTooltipData(markerData))
+        .openPopup();
     }
+
+    function formatTooltipData(data) {
+      var tooltipData = 'Speed: ';
+      // TODO - Maybe make denominator (10) a setting or more dynamic?
+      var speed = data.wheelData.speed;
+      var dist = data.wheelData.tripOdometer;
+
+      if ($scope.displayMetric) {
+        tooltipData += Math.round((UnitService.convertToMetric('speed', speed) * 10) / 10) +
+        'km/h' +
+        ' - Distance: ' +
+        UnitService.convertToMetric('dist', dist).toFixed(1) +
+        'km';
+      } else {
+        tooltipData += Math.round((UnitService.convertToImperial('speed', speed) * 10) / 10) +
+        'mph' +
+        ' - Distance: ' +
+        UnitService.convertToImperial('dist', dist).toFixed(1) +
+        ' mile';
+        tooltipData += dist > 1 ? 's' : '';
+      }
+
+      return tooltipData;
+    }
+
+    $scope.$watch('displayMetric', function watchUnits(newVal, oldVal) {
+      // TODO - If we have a popup currently we want to update the content, however we're
+      // not storing the current data we need on scope or anywhere yet - need to consider perf.
+      if (currentAltMarker.getPopup()) {
+        console.log(currentAltMarker.getPopup());
+        console.log(currentAltMarker.getPopup().getContent());
+        // currentAltMarker.setPopupContent();
+      }
+    });
 
     function initElevationGraph() {
       /* jshint unused:false */
+
+      // We can do a lot more with the wheelData and sensorData
+      var graphData = features.map(function makeGraphData(feature) {
+        return {
+          lat: feature.geometry.coordinates[1],
+          lng: feature.geometry.coordinates[0],
+          alt: feature.properties.sensorData.phone.altitude,
+          wheelData: feature.properties.wheelData,
+          sensorData: feature.properties.sensorData.phone
+        };
+      });
+
       var width = 725;
       var height = 400;
       var padding = 25;
@@ -123,7 +176,7 @@ angular.module('bikeMapsApp')
         .orient('right');
 
       svg.selectAll('rect')
-        .data(latLngCoords)
+        .data(graphData)
         .enter()
         .append('rect')
         .attr('width', xScale.rangeBand())
@@ -155,7 +208,7 @@ angular.module('bikeMapsApp')
         // Leverage native browser `title` support of svgs
         .append('svg:title')
         .text(function assignText(data) {
-          return 'Altitude: ' + data.alt.toFixed(4);
+          return 'Altitude: ' + data.alt.toFixed(4) + formatTooltipData(data);
         });
 
       // Graph labels/axis additions

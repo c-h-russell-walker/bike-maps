@@ -3,6 +3,11 @@
   <h3>Here's our "{{ ::rideName }}" ride data:</h3>
 
   <div id="ride-container">
+    <form id="bike-map-controls">
+      <label for="units">Display as Metric</label>
+      <input type="checkbox"
+       id="units"
+       ng-model="displayMetric" />
     <div id="map"></div>
   </div>
 
